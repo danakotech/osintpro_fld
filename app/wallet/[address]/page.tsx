@@ -1,8 +1,73 @@
+"use client"
+
+import { useState, useEffect } from "react"
+import { useSearchParams } from "next/navigation"
+
 interface Props {
   params: { address: string }
 }
 
 export default function WalletPage({ params }: Props) {
+  const [loading, setLoading] = useState(true)
+  const [walletData, setWalletData] = useState<any>(null)
+  const [error, setError] = useState("")
+  const searchParams = useSearchParams()
+  const network = searchParams.get("network") || "ethereum"
+
+  useEffect(() => {
+    const loadWalletData = async () => {
+      setLoading(true)
+      try {
+        // Simular carga de datos de la API
+        await new Promise((resolve) => setTimeout(resolve, 2000))
+
+        // Datos simulados para demostración
+        setWalletData({
+          address: params.address,
+          network: network,
+          balance: 15.5432,
+          balanceUSD: 38858.0,
+          totalValueUSD: 45230.5,
+          transactionCount: 1247,
+          firstActivity: "2021-03-15",
+          riskScore: 2,
+        })
+      } catch (err) {
+        setError("Error al cargar los datos de la wallet")
+      } finally {
+        setLoading(false)
+      }
+    }
+
+    loadWalletData()
+  }, [params.address, network])
+
+  if (loading) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-gray-900 via-purple-900 to-gray-900 flex items-center justify-center">
+        <div className="text-center">
+          <div className="w-16 h-16 border-4 border-purple-400 border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
+          <div className="text-white text-xl">Ejecutando análisis OSINT...</div>
+          <div className="text-gray-400 mt-2">Conectando con blockchain y bases de datos</div>
+        </div>
+      </div>
+    )
+  }
+
+  if (error) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-gray-900 via-purple-900 to-gray-900 flex items-center justify-center">
+        <div className="text-center">
+          <div className="w-16 h-16 bg-red-600 rounded-full flex items-center justify-center mx-auto mb-4">
+            <div className="w-8 h-8 bg-white rounded"></div>
+          </div>
+          <div className="text-white text-xl">Error en el análisis</div>
+          <div className="text-gray-400 mt-2">{error}</div>
+        </div>
+      </div>
+    )
+  }
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-900 via-purple-900 to-gray-900">
       {/* Header */}
@@ -39,8 +104,10 @@ export default function WalletPage({ params }: Props) {
               </div>
             </div>
             <div className="text-right">
-              <div className="text-2xl font-bold text-white">15.5432 ETH</div>
-              <div className="text-sm text-gray-400">~$38,858.00 USD</div>
+              <div className="text-2xl font-bold text-white">
+                {walletData?.balance?.toFixed(4) || "0.0000"} {network === "ethereum" ? "ETH" : "MATIC"}
+              </div>
+              <div className="text-sm text-gray-400">~${walletData?.balanceUSD?.toLocaleString() || "0.00"} USD</div>
             </div>
           </div>
         </div>
@@ -52,7 +119,9 @@ export default function WalletPage({ params }: Props) {
               <div className="w-5 h-5 bg-green-400 rounded mr-2"></div>
               <h3 className="text-white font-medium">Valor Total</h3>
             </div>
-            <div className="text-2xl font-bold text-white">$45,230.50</div>
+            <div className="text-2xl font-bold text-white">
+              ${walletData?.totalValueUSD?.toLocaleString() || "0.00"}
+            </div>
             <p className="text-sm text-gray-400">Incluyendo tokens</p>
           </div>
 
@@ -61,7 +130,7 @@ export default function WalletPage({ params }: Props) {
               <div className="w-5 h-5 bg-blue-400 rounded mr-2"></div>
               <h3 className="text-white font-medium">Transacciones</h3>
             </div>
-            <div className="text-2xl font-bold text-white">1,247</div>
+            <div className="text-2xl font-bold text-white">{walletData?.transactionCount?.toLocaleString() || "0"}</div>
             <p className="text-sm text-gray-400">Total histórico</p>
           </div>
 
@@ -70,7 +139,7 @@ export default function WalletPage({ params }: Props) {
               <div className="w-5 h-5 bg-yellow-400 rounded mr-2"></div>
               <h3 className="text-white font-medium">Primera Actividad</h3>
             </div>
-            <div className="text-lg font-bold text-white">Mar 2021</div>
+            <div className="text-lg font-bold text-white">{walletData?.firstActivity || "N/A"}</div>
             <p className="text-sm text-gray-400">Fecha de creación</p>
           </div>
 
@@ -79,7 +148,7 @@ export default function WalletPage({ params }: Props) {
               <div className="w-5 h-5 bg-green-400 rounded mr-2"></div>
               <h3 className="text-white font-medium">Riesgo</h3>
             </div>
-            <div className="text-2xl font-bold text-green-400">2/10</div>
+            <div className="text-2xl font-bold text-green-400">{walletData?.riskScore || "0"}/10</div>
             <p className="text-sm text-gray-400">BAJO</p>
           </div>
         </div>

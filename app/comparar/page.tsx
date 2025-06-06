@@ -1,4 +1,25 @@
+"use client"
+
+import { useState } from "react"
+
 export default function ComparePage() {
+  const [wallet1, setWallet1] = useState("")
+  const [wallet2, setWallet2] = useState("")
+  const [loading, setLoading] = useState(false)
+
+  const handleCompare = async () => {
+    if (!wallet1 || !wallet2) {
+      alert("Por favor ingresa ambas direcciones de wallet")
+      return
+    }
+
+    setLoading(true)
+    // Simular análisis de comparación
+    await new Promise((resolve) => setTimeout(resolve, 3000))
+    setLoading(false)
+    alert("Comparación completada. Esta función estará disponible próximamente con datos reales.")
+  }
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-900 via-purple-900 to-gray-900">
       {/* Header */}
@@ -31,6 +52,8 @@ export default function ComparePage() {
               <input
                 type="text"
                 placeholder="0x742d35Cc6634C0532925a3b8D4C9db96590c6C87"
+                value={wallet1}
+                onChange={(e) => setWallet1(e.target.value)}
                 className="w-full h-12 px-4 bg-gray-800 border border-gray-600 rounded-lg text-white placeholder-gray-400"
               />
             </div>
@@ -39,12 +62,18 @@ export default function ComparePage() {
               <input
                 type="text"
                 placeholder="0x8ba1f109551bD432803012645Hac136c22C57B"
+                value={wallet2}
+                onChange={(e) => setWallet2(e.target.value)}
                 className="w-full h-12 px-4 bg-gray-800 border border-gray-600 rounded-lg text-white placeholder-gray-400"
               />
             </div>
           </div>
-          <button className="w-full h-12 bg-purple-600 hover:bg-purple-700 text-white font-semibold rounded-lg transition-colors">
-            Comparar Wallets
+          <button
+            onClick={handleCompare}
+            disabled={loading}
+            className="w-full h-12 bg-purple-600 hover:bg-purple-700 text-white font-semibold rounded-lg transition-colors disabled:opacity-50"
+          >
+            {loading ? "Analizando conexiones..." : "Comparar Wallets"}
           </button>
         </div>
 

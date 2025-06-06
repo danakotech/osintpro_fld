@@ -1,4 +1,50 @@
+"use client"
+
+import type React from "react"
+
+import { useState } from "react"
+import { useRouter } from "next/navigation"
+
 export default function HomePage() {
+  const [address, setAddress] = useState("")
+  const [network, setNetwork] = useState("ethereum")
+  const [isLoading, setIsLoading] = useState(false)
+  const [error, setError] = useState("")
+  const router = useRouter()
+
+  const validateAddress = (addr: string) => {
+    const ethRegex = /^0x[a-fA-F0-9]{40}$/
+    const ensRegex = /^[a-zA-Z0-9-]+\.eth$/
+    return ethRegex.test(addr) || ensRegex.test(addr)
+  }
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault()
+    setError("")
+
+    if (!address.trim()) {
+      setError("Por favor ingresa una dirección de wallet")
+      return
+    }
+
+    if (!validateAddress(address)) {
+      setError("Formato de dirección inválido. Usa formato 0x... o nombre.eth")
+      return
+    }
+
+    setIsLoading(true)
+
+    try {
+      // Simular validación
+      await new Promise((resolve) => setTimeout(resolve, 1000))
+      router.push(`/wallet/${address}?network=${network}`)
+    } catch (err) {
+      setError("Error al procesar la solicitud")
+    } finally {
+      setIsLoading(false)
+    }
+  }
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-900 via-purple-900 to-gray-900">
       {/* Header */}
@@ -78,29 +124,53 @@ export default function HomePage() {
               <p className="text-gray-400">Ingresa la dirección de wallet para comenzar el análisis completo</p>
             </div>
 
-            <div className="space-y-4">
+            <form onSubmit={handleSubmit} className="space-y-4">
               <div className="grid grid-cols-1 lg:grid-cols-4 gap-4">
                 <div className="lg:col-span-3">
                   <input
                     type="text"
                     placeholder="0x742d35Cc6634C0532925a3b8D4C9db96590c6C87 o nombre.eth"
+                    value={address}
+                    onChange={(e) => setAddress(e.target.value)}
                     className="w-full h-12 px-4 bg-gray-800/50 border border-gray-600 rounded-lg text-white placeholder-gray-400 text-lg"
                   />
                 </div>
-                <select className="h-12 px-4 bg-gray-800/50 border border-gray-600 rounded-lg text-white">
+                <select
+                  value={network}
+                  onChange={(e) => setNetwork(e.target.value)}
+                  className="h-12 px-4 bg-gray-800/50 border border-gray-600 rounded-lg text-white"
+                >
                   <option value="ethereum">Ethereum</option>
                   <option value="polygon">Polygon</option>
                   <option value="bsc">BSC</option>
                 </select>
               </div>
 
-              <button className="w-full h-12 bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 text-white font-semibold rounded-lg transition-colors">
-                <div className="flex items-center justify-center">
-                  <div className="w-5 h-5 bg-white/20 rounded mr-2"></div>
-                  Analizar Wallet con IA
+              {error && (
+                <div className="flex items-center space-x-2 text-red-400 bg-red-900/20 p-3 rounded-lg">
+                  <div className="w-4 h-4 bg-red-400 rounded-full"></div>
+                  <span className="text-sm">{error}</span>
                 </div>
+              )}
+
+              <button
+                type="submit"
+                disabled={isLoading}
+                className="w-full h-12 bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 text-white font-semibold rounded-lg transition-colors disabled:opacity-50"
+              >
+                {isLoading ? (
+                  <div className="flex items-center justify-center">
+                    <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin mr-2"></div>
+                    Analizando Wallet...
+                  </div>
+                ) : (
+                  <div className="flex items-center justify-center">
+                    <div className="w-5 h-5 bg-white/20 rounded mr-2"></div>
+                    Analizar Wallet con IA
+                  </div>
+                )}
               </button>
-            </div>
+            </form>
 
             <div className="mt-6 text-center">
               <p className="text-xs text-gray-500">
