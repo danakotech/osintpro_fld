@@ -1,5 +1,5 @@
-import { ComparisonTool } from "@/components/comparison-tool"
 import { Header } from "@/components/header"
+import { ComparisonTool } from "@/components/comparison-tool"
 
 export default function ComparePage() {
   return (

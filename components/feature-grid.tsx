@@ -1,18 +1,5 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
-import {
-  Coins,
-  Activity,
-  Shield,
-  Network,
-  Clock,
-  Search,
-  BarChart3,
-  Globe,
-  Eye,
-  Zap,
-  Users,
-  AlertTriangle,
-} from "lucide-react"
+import { Coins, Activity, Shield, Network, Clock, Search, BarChart3, Globe } from "lucide-react"
 
 const features = [
   {
@@ -62,30 +49,6 @@ const features = [
     title: "Multi-Blockchain",
     description: "Soporte para 20+ blockchains y detección automática de bridges",
     color: "text-pink-400",
-  },
-  {
-    icon: Eye,
-    title: "Monitoreo Continuo",
-    description: "Alertas en tiempo real y seguimiento de actividad sospechosa",
-    color: "text-indigo-400",
-  },
-  {
-    icon: Zap,
-    title: "Análisis Instantáneo",
-    description: "Resultados en segundos con APIs optimizadas y cache inteligente",
-    color: "text-emerald-400",
-  },
-  {
-    icon: Users,
-    title: "Redes Sociales",
-    description: "Correlación con perfiles de Twitter, Reddit, Discord y Telegram",
-    color: "text-violet-400",
-  },
-  {
-    icon: AlertTriangle,
-    title: "Alertas Inteligentes",
-    description: "Notificaciones automáticas de actividad anómala y riesgos detectados",
-    color: "text-amber-400",
   },
 ]
 

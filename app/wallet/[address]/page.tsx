@@ -1,5 +1,5 @@
-import { WalletDashboard } from "@/components/wallet-dashboard"
 import { Header } from "@/components/header"
+import { WalletDashboard } from "@/components/wallet-dashboard"
 
 interface Props {
   params: { address: string }
