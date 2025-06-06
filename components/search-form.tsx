@@ -98,7 +98,7 @@ export function SearchForm() {
                 {isLoading ? (
                   <>
                     <Loader2 className="mr-2 h-5 w-5 animate-spin" />
-                    Iniciando Análisis OSINT...
+                    Analizando Wallet...
                   </>
                 ) : (
                   <>
