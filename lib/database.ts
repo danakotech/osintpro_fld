@@ -1,12 +1,13 @@
 import { supabase } from "./supabase"
 
+// Interfaces para los tipos de datos
 export interface WalletAnalysis {
   id?: number
   address: string
   network: string
   balance: number
   balance_usd: number
-  total_value_usd: number
+  total_value_usd?: number
   transaction_count: number
   first_activity?: string
   last_activity?: string
@@ -26,7 +27,7 @@ export interface WalletTransaction {
   to_address?: string
   value: number
   gas_used?: number
-  gas_price?: number
+  gas_price?: string
   transaction_fee?: number
   timestamp: string
   transaction_type?: string
@@ -57,104 +58,161 @@ export interface WalletComparison {
   created_at?: string
 }
 
-// Funciones de base de datos
+// Funciones para interactuar con la base de datos
 export async function saveWalletAnalysis(data: WalletAnalysis) {
-  const { data: result, error } = await supabase
-    .from("wallet_analysis")
-    .upsert(data, { onConflict: "address,network" })
-    .select()
+  try {
+    const { data: result, error } = await supabase
+      .from("wallet_analysis")
+      .upsert(data, { onConflict: "address,network" })
+      .select()
 
-  if (error) throw error
-  return result
+    if (error) throw error
+    return result
+  } catch (error) {
+    console.error("Error guardando análisis de wallet:", error)
+    return null
+  }
 }
 
 export async function getWalletAnalysis(address: string, network: string) {
-  const { data, error } = await supabase
-    .from("wallet_analysis")
-    .select("*")
-    .eq("address", address)
-    .eq("network", network)
-    .single()
+  try {
+    const { data, error } = await supabase
+      .from("wallet_analysis")
+      .select("*")
+      .eq("address", address.toLowerCase())
+      .eq("network", network)
+      .single()
 
-  if (error && error.code !== "PGRST116") throw error
-  return data
+    if (error && error.code !== "PGRST116") throw error
+    return data
+  } catch (error) {
+    console.error("Error obteniendo análisis de wallet:", error)
+    return null
+  }
 }
 
 export async function saveWalletTransactions(transactions: WalletTransaction[]) {
-  const { data, error } = await supabase
-    .from("wallet_transactions")
-    .upsert(transactions, { onConflict: "tx_hash" })
-    .select()
+  try {
+    if (transactions.length === 0) return []
 
-  if (error) throw error
-  return data
+    const { data, error } = await supabase
+      .from("wallet_transactions")
+      .upsert(transactions, { onConflict: "tx_hash" })
+      .select()
+
+    if (error) throw error
+    return data
+  } catch (error) {
+    console.error("Error guardando transacciones:", error)
+    return []
+  }
 }
 
 export async function getWalletTransactions(address: string, limit = 100) {
-  const { data, error } = await supabase
-    .from("wallet_transactions")
-    .select("*")
-    .eq("wallet_address", address)
-    .order("timestamp", { ascending: false })
-    .limit(limit)
+  try {
+    const { data, error } = await supabase
+      .from("wallet_transactions")
+      .select("*")
+      .eq("wallet_address", address.toLowerCase())
+      .order("timestamp", { ascending: false })
+      .limit(limit)
 
-  if (error) throw error
-  return data
+    if (error) throw error
+    return data || []
+  } catch (error) {
+    console.error("Error obteniendo transacciones:", error)
+    return []
+  }
 }
 
 export async function saveWalletTokens(tokens: WalletToken[]) {
-  const { data, error } = await supabase
-    .from("wallet_tokens")
-    .upsert(tokens, { onConflict: "wallet_address,token_address" })
-    .select()
+  try {
+    if (tokens.length === 0) return []
 
-  if (error) throw error
-  return data
+    const { data, error } = await supabase
+      .from("wallet_tokens")
+      .upsert(tokens, { onConflict: "wallet_address,token_address" })
+      .select()
+
+    if (error) throw error
+    return data
+  } catch (error) {
+    console.error("Error guardando tokens:", error)
+    return []
+  }
 }
 
 export async function getWalletTokens(address: string) {
-  const { data, error } = await supabase
-    .from("wallet_tokens")
-    .select("*")
-    .eq("wallet_address", address)
-    .order("balance_usd", { ascending: false })
+  try {
+    const { data, error } = await supabase
+      .from("wallet_tokens")
+      .select("*")
+      .eq("wallet_address", address.toLowerCase())
+      .order("balance_usd", { ascending: false })
 
-  if (error) throw error
-  return data
+    if (error) throw error
+    return data || []
+  } catch (error) {
+    console.error("Error obteniendo tokens:", error)
+    return []
+  }
 }
 
 export async function saveWalletComparison(comparison: WalletComparison) {
-  const { data, error } = await supabase.from("wallet_comparisons").insert(comparison).select()
+  try {
+    const { data, error } = await supabase.from("wallet_comparisons").insert(comparison).select()
 
-  if (error) throw error
-  return data
+    if (error) throw error
+    return data
+  } catch (error) {
+    console.error("Error guardando comparación:", error)
+    return null
+  }
 }
 
 export async function getWalletConnections(address: string) {
-  const { data, error } = await supabase
-    .from("wallet_connections")
-    .select("*")
-    .or(`wallet1.eq.${address},wallet2.eq.${address}`)
-    .order("interaction_count", { ascending: false })
+  try {
+    const { data, error } = await supabase
+      .from("wallet_connections")
+      .select("*")
+      .or(`wallet1.eq.${address.toLowerCase()},wallet2.eq.${address.toLowerCase()}`)
+      .order("interaction_count", { ascending: false })
 
-  if (error) throw error
-  return data
+    if (error) throw error
+    return data || []
+  } catch (error) {
+    console.error("Error obteniendo conexiones:", error)
+    return []
+  }
 }
 
 export async function getOSINTData(address: string) {
-  const { data, error } = await supabase.from("osint_social_data").select("*").eq("wallet_address", address)
+  try {
+    const { data, error } = await supabase
+      .from("osint_social_data")
+      .select("*")
+      .eq("wallet_address", address.toLowerCase())
 
-  if (error) throw error
-  return data
+    if (error) throw error
+    return data || []
+  } catch (error) {
+    console.error("Error obteniendo datos OSINT:", error)
+    return []
+  }
 }
 
 export async function getRiskAssessments(address: string) {
-  const { data, error } = await supabase
-    .from("risk_assessments")
-    .select("*")
-    .eq("wallet_address", address)
-    .order("risk_score", { ascending: false })
+  try {
+    const { data, error } = await supabase
+      .from("risk_assessments")
+      .select("*")
+      .eq("wallet_address", address.toLowerCase())
+      .order("risk_score", { ascending: false })
 
-  if (error) throw error
-  return data
+    if (error) throw error
+    return data || []
+  } catch (error) {
+    console.error("Error obteniendo evaluaciones de riesgo:", error)
+    return []
+  }
 }
