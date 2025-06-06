@@ -40,7 +40,6 @@ export function SearchForm() {
     setIsLoading(true)
 
     try {
-      // Simular un pequeño retraso para la UX
       await new Promise((resolve) => setTimeout(resolve, 1000))
       router.push(`/wallet/${address}?network=${network}`)
     } catch (err) {
