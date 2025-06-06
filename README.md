@@ -1,30 +1,54 @@
-# New Project
+# 🕵️‍♀️ OSINTPRO – Plataforma de Inteligencia Abierta para Wallets Blockchain
 
-*Automatically synced with your [v0.dev](https://v0.dev) deployments*
+**OSINTPRO** es una plataforma de análisis OSINT (Open Source Intelligence) diseñada para investigar y visualizar toda la actividad pública y relevante de una wallet en blockchains como Ethereum, BSC, Polygon, entre otras.
 
-[![Deployed on Vercel](https://img.shields.io/badge/Deployed%20on-Vercel-black?style=for-the-badge&logo=vercel)](https://vercel.com/danakos-projects/v0-new-project-babvj5mfui5)
-[![Built with v0](https://img.shields.io/badge/Built%20with-v0.dev-black?style=for-the-badge)](https://v0.dev/chat/projects/baBVj5MFUI5)
+Permite a analistas, investigadores y usuarios rastrear el comportamiento de una dirección con fines de auditoría, trazabilidad, detección de estafas, o simplemente para obtener una radiografía completa de una cartera cripto.
 
-## Overview
+---
 
-This repository will stay in sync with your deployed chats on [v0.dev](https://v0.dev).
-Any changes you make to your deployed app will be automatically pushed to this repository from [v0.dev](https://v0.dev).
+## 🎯 ¿Qué ofrece OSINTPRO?
 
-## Deployment
+### 🔗 Datos en cadena (on-chain)
+- ✅ Saldo en la blockchain consultada (ETH, BNB, MATIC, etc.)
+- ✅ Tokens ERC-20 / BEP-20 y sus balances
+- ✅ NFTs visuales y metadata (ERC-721 / 1155)
+- ✅ Últimas 100 transacciones con detalles completos
+- ✅ Contratos interactuados (incluyendo scams conocidos)
+- ✅ Actividad en exchanges descentralizados (DEX)
+- ✅ Interacciones con bridges, Layer 2 y chains alternativas
+- ✅ Enlaces entre wallets mediante análisis de grafos
 
-Your project is live at:
+### 🌐 Datos fuera de la cadena (off-chain)
+- 🔍 Búsquedas automáticas en Google, Twitter, Reddit y GitHub
+- 🧠 Resolución de nombres ENS y dominios asociados
+- 🛑 Comprobación de reputación (Revoke.cash, ScamSniffer)
+- 🕸️ Presencia en bases de datos públicas o leaks
+- 🚩 Alertas de riesgo e historial de comportamiento
 
-**[https://vercel.com/danakos-projects/v0-new-project-babvj5mfui5](https://vercel.com/danakos-projects/v0-new-project-babvj5mfui5)**
+### 📊 Otras funcionalidades
+- 📈 Precio en tiempo real de ETH y tokens (via CoinGecko)
+- 🧾 Exportación de reportes en PDF o JSON
+- 🔗 Enlaces directos a Etherscan, OpenSea, DeBank, etc.
+- 🖥️ Interfaz web tipo dashboard profesional, estilo Coinbase/Arkham
 
-## Build your app
+---
 
-Continue building your app on:
+## 🛠️ Tecnologías Utilizadas
 
-**[https://v0.dev/chat/projects/baBVj5MFUI5](https://v0.dev/chat/projects/baBVj5MFUI5)**
+- **Next.js** + **React** para frontend y backend (API routes)
+- **Tailwind CSS** para UI responsiva
+- **Etherscan API** para transacciones y balances
+- **CoinGecko API** para precios en tiempo real
+- **OpenSea / Moralis API** para NFTs
+- **Reddit / Twitter API**, búsqueda directa y scraping OSINT
 
-## How It Works
+---
 
-1. Create and modify your project using [v0.dev](https://v0.dev)
-2. Deploy your chats from the v0 interface
-3. Changes are automatically pushed to this repository
-4. Vercel deploys the latest version from this repository
+## 🚀 Cómo iniciar
+
+```bash
+git clone https://github.com/danakotech/osintpro_fld
+cd osintpro
+npm install
+
+www.legionbitcoin.com
