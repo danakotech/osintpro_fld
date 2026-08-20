@@ -1,54 +1,82 @@
-# 🕵️‍♀️ OSINTPRO – Plataforma de Inteligencia Abierta para Wallets Blockchain
+# web3-security-layer
 
-**OSINTPRO** es una plataforma de análisis OSINT (Open Source Intelligence) diseñada para investigar y visualizar toda la actividad pública y relevante de una wallet en blockchains como Ethereum, BSC, Polygon, entre otras.
+SaaS beta en **Next.js 14 + TypeScript + Tailwind** con App Router.
 
-Permite a analistas, investigadores y usuarios rastrear el comportamiento de una dirección con fines de auditoría, trazabilidad, detección de estafas, o simplemente para obtener una radiografía completa de una cartera cripto.
+## Features
+- Home `/`: análisis de contrato/token por `chain + address`, score 0–100 y alertas.
+- PRO `/pro`: compra **lifetime** on-chain en Ethereum, Sepolia o Polygon en 2 pasos:
+  1. Crear intent
+  2. Pagar tx nativa y confirmar on-chain
 
----
+## Requisitos
+- Node.js LTS (recomendado 20+)
+- npm
+- Wallet EVM en navegador (MetaMask, Rabby, etc.)
+- Proyecto Supabase
 
-## 🎯 ¿Qué ofrece OSINTPRO?
-
-### 🔗 Datos en cadena (on-chain)
-- ✅ Saldo en la blockchain consultada (ETH, BNB, MATIC, etc.)
-- ✅ Tokens ERC-20 / BEP-20 y sus balances
-- ✅ NFTs visuales y metadata (ERC-721 / 1155)
-- ✅ Últimas 100 transacciones con detalles completos
-- ✅ Contratos interactuados (incluyendo scams conocidos)
-- ✅ Actividad en exchanges descentralizados (DEX)
-- ✅ Interacciones con bridges, Layer 2 y chains alternativas
-- ✅ Enlaces entre wallets mediante análisis de grafos
-
-### 🌐 Datos fuera de la cadena (off-chain)
-- 🔍 Búsquedas automáticas en Google, Twitter, Reddit y GitHub
-- 🧠 Resolución de nombres ENS y dominios asociados
-- 🛑 Comprobación de reputación (Revoke.cash, ScamSniffer)
-- 🕸️ Presencia en bases de datos públicas o leaks
-- 🚩 Alertas de riesgo e historial de comportamiento
-
-### 📊 Otras funcionalidades
-- 📈 Precio en tiempo real de ETH y tokens (via CoinGecko)
-- 🧾 Exportación de reportes en PDF o JSON
-- 🔗 Enlaces directos a Etherscan, OpenSea, DeBank, etc.
-- 🖥️ Interfaz web tipo dashboard profesional, estilo Coinbase/Arkham
-
----
-
-## 🛠️ Tecnologías Utilizadas
-
-- **Next.js** + **React** para frontend y backend (API routes)
-- **Tailwind CSS** para UI responsiva
-- **Etherscan API** para transacciones y balances
-- **CoinGecko API** para precios en tiempo real
-- **OpenSea / Moralis API** para NFTs
-- **Reddit / Twitter API**, búsqueda directa y scraping OSINT
-
----
-
-## 🚀 Cómo iniciar
-
-```bash
-git clone https://github.com/danakotech/osintpro_fld
-cd osintpro
+## Instalación (Windows PowerShell)
+```powershell
+git clone <TU_REPO_URL> web3-security-layer
+cd web3-security-layer
 npm install
+Copy-Item .env.local.example .env.local
+# Edita .env.local y pega tus valores reales
+npm run dev
+```
 
-www.legionbitcoin.com
+Abre: `http://localhost:3000`
+
+## Variables de entorno
+`.env.local.example` incluye placeholders:
+
+```env
+NEXT_PUBLIC_SUPABASE_URL=
+NEXT_PUBLIC_SUPABASE_ANON_KEY=
+SUPABASE_SERVICE_ROLE_KEY=
+NEXT_PUBLIC_RECEIVER_WALLET=
+NEXT_PUBLIC_PRO_PRICE_WEI=
+PRO_MIN_CONFIRMATIONS=
+NEXT_PUBLIC_RPC_MAINNET=
+NEXT_PUBLIC_RPC_SEPOLIA=
+NEXT_PUBLIC_RPC_POLYGON=
+GOPLUS_API_KEY=
+```
+
+> Nunca hardcodear secretos. `SUPABASE_SERVICE_ROLE_KEY` solo se usa en rutas server.
+
+## Configurar Supabase
+1. Crea un proyecto en Supabase.
+2. En SQL Editor, ejecuta `supabase.sql`.
+3. Copia URL pública y keys a `.env.local`.
+
+## Configurar GoPlus
+- Usa la Token Security API de GoPlus.
+- Si tu plan requiere API key, colócala en `GOPLUS_API_KEY`.
+- Si falla GoPlus, `/api/score` devuelve fallback conservador con warning.
+
+## Probar flujo PRO en Sepolia (recomendado)
+1. Conecta wallet con ETH de testnet.
+2. En `/pro`, cambia a Sepolia.
+3. Paso 1: crear intent.
+4. Paso 2: pagar.
+5. El backend verifica:
+   - `to == receiver`
+   - `from == payer`
+   - `value >= amount`
+   - `receipt.success`
+   - confirmaciones mínimas `PRO_MIN_CONFIRMATIONS`
+6. Si todo ok, wallet queda `is_pro=true` en `pro_wallets`.
+
+## Scripts
+```bash
+npm run dev
+npm run build
+npm run lint
+npm run test
+```
+
+## Troubleshooting
+- **Hydration mismatch wallet/red:** UI usa hydration gate y placeholders (`—`, `Ethereum`) hasta mount.
+- **wagmi/connectors error:** este proyecto no importa `wagmi/connectors`; usa `multiInjectedProviderDiscovery: true`.
+- **Env faltantes:** revisa `.env.local` y reinicia `npm run dev`.
+- **Service role inválido:** verifica `SUPABASE_SERVICE_ROLE_KEY` (server-side) y permisos de tablas.
